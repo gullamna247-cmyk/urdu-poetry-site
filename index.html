@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>شاعری گیلری — Shayari Gallery | Urdu Poetry Images</title>
+  <meta name="description" content="Discover beautiful Urdu poetry images, Islamic quotes, Mehndi designs and more. Browse, download & share stunning visual poetry."/>
+  <meta property="og:title" content="شاعری گیلری — Shayari Gallery"/>
+  <meta property="og:description" content="Discover beautiful Urdu poetry images, Islamic quotes, Mehndi designs and more."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Nastaliq+Urdu:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --bg:#0f0e0c;--bg2:#1a1815;--bg3:#242220;--surface:#2a2825;
+      --border:#3a3835;--gold:#c9a84c;--gold2:#e8c96a;
+      --gold-dim:rgba(201,168,76,.15);--cream:#f5f0e8;
+      --text:#f0ebe0;--text2:#b8b0a0;--text3:#7a7268;
+      --radius:16px;--radius-sm:10px;
+      --shadow:0 8px 32px rgba(0,0,0,.4);
+      --shadow-hover:0 16px 48px rgba(0,0,0,.6);
+      --t:all .3s cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:var(--bg2)}
+    ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+
+    /* NAVBAR */
+    .navbar{position:sticky;top:0;z-index:100;background:rgba(15,14,12,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;gap:20px}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;cursor:pointer}
+    .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+    .logo-text{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--gold2)}
+    .logo-urdu{font-family:'Noto Nastaliq Urdu',serif;font-size:14px;color:var(--text2);display:block;line-height:1;margin-top:1px}
+    .search-wrap{flex:1;max-width:500px;position:relative}
+    .search-wrap input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:50px;padding:10px 20px 10px 44px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:var(--t)}
+    .search-wrap input::placeholder{color:var(--text3)}
+    .search-wrap input:focus{border-color:var(--gold);background:var(--bg2);box-shadow:0 0 0 3px var(--gold-dim)}
+    .search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:16px;pointer-events:none}
+    .nav-right{display:flex;align-items:center;gap:12px;margin-left:auto;flex-shrink:0}
+    .cat-dropdown{position:relative}
+    .cat-btn{background:var(--surface);border:1px solid var(--border);border-radius:50px;padding:8px 18px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:var(--t)}
+    .cat-btn:hover{border-color:var(--gold);color:var(--gold2)}
+    .cat-menu{position:absolute;top:calc(100% + 8px);right:0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);min-width:200px;padding:6px;box-shadow:var(--shadow);display:none;z-index:200}
+    .cat-menu.open{display:block;animation:fadeDown .2s ease}
+    .cat-menu a{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;color:var(--text2);text-decoration:none;font-size:13px;transition:var(--t)}
+    .cat-menu a:hover{background:var(--surface);color:var(--gold2)}
+    .admin-link{background:var(--gold-dim);border:1px solid rgba(201,168,76,.3);color:var(--gold2);padding:7px 14px;border-radius:50px;font-size:12px;text-decoration:none;transition:var(--t)}
+    .admin-link:hover{background:var(--gold);color:#000}
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+    /* HERO */
+    .hero{text-align:center;padding:64px 24px 48px;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(201,168,76,.12) 0%,transparent 70%),radial-gradient(ellipse 40% 30% at 20% 100%,rgba(201,168,76,.06) 0%,transparent 60%);pointer-events:none}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-dim);border:1px solid rgba(201,168,76,.3);border-radius:50px;padding:6px 14px;font-size:12px;color:var(--gold2);letter-spacing:.5px;margin-bottom:20px}
+    .hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,64px);font-weight:700;line-height:1.15;color:var(--cream);margin-bottom:10px}
+    .hero h1 em{font-style:italic;color:var(--gold2)}
+    .hero-urdu{font-family:'Noto Nastaliq Urdu',serif;font-size:clamp(18px,3vw,28px);color:var(--text2);direction:rtl;margin-bottom:20px;line-height:2}
+    .hero p{font-size:16px;color:var(--text2);max-width:500px;margin:0 auto 32px;line-height:1.7}
+    .hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
+    .stat{text-align:center}
+    .stat-num{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold2);font-weight:700}
+    .stat-label{font-size:12px;color:var(--text3);letter-spacing:.5px}
+
+    /* CATEGORIES */
+    .section-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--cream);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+    .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+    .categories-section{padding:0 24px 48px;max-width:1400px;margin:0 auto}
+    .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+    .cat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px 20px;cursor:pointer;transition:var(--t);text-decoration:none;display:block;position:relative;overflow:hidden}
+    .cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(201,168,76,.05));opacity:0;transition:var(--t)}
+    .cat-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:var(--shadow-hover)}
+    .cat-card:hover::before,.cat-card.active::before{opacity:1}
+    .cat-card.active{border-color:var(--gold);background:var(--surface)}
+    .cat-emoji{font-size:32px;margin-bottom:12px;display:block}
+    .cat-name{font-family:'Playfair Display',serif;font-size:16px;color:var(--cream);margin-bottom:4px}
+    .cat-urdu{font-family:'Noto Nastaliq Urdu',serif;font-size:13px;color:var(--text2);direction:rtl;margin-bottom:8px}
+    .cat-count{font-size:12px;color:var(--gold);font-weight:500}
+
+    /* GALLERY */
+    .gallery-section{padding:0 24px 48px;max-width:1400px;margin:0 auto}
+    .gallery-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .active-filter{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text2)}
+    .filter-tag{background:var(--gold-dim);border:1px solid rgba(201,168,76,.3);color:var(--gold2);padding:4px 12px;border-radius:50px;font-size:13px}
+    .sort-select{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 14px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;cursor:pointer}
+
+    /* MASONRY */
+    .masonry{columns:5;column-gap:14px}
+    @media(max-width:1200px){.masonry{columns:4}}
+    @media(max-width:900px){.masonry{columns:3}}
+    @media(max-width:600px){.masonry{columns:2}}
+    @media(max-width:380px){.masonry{columns:1}}
+
+    .masonry-item{break-inside:avoid;margin-bottom:14px;border-radius:var(--radius);overflow:hidden;position:relative;cursor:pointer;background:var(--bg2);border:1px solid var(--border);transition:var(--t)}
+    .masonry-item:hover{transform:scale(1.02);box-shadow:var(--shadow-hover);border-color:rgba(201,168,76,.4);z-index:1}
+    .masonry-item img{width:100%;display:block;transition:var(--t)}
+    .masonry-item:hover img{transform:scale(1.04)}
+    .img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 55%);opacity:0;transition:var(--t);display:flex;flex-direction:column;justify-content:flex-end;padding:16px}
+    .masonry-item:hover .img-overlay{opacity:1}
+    .img-title{font-family:'Noto Nastaliq Urdu',serif;font-size:13px;color:var(--cream);direction:rtl;line-height:1.8;margin-bottom:8px}
+    .img-title-en{font-size:12px;color:var(--cream);margin-bottom:8px;line-height:1.4}
+    .img-actions{display:flex;gap:8px}
+    .img-btn{width:32px;height:32px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--t)}
+    .img-btn.dl{background:var(--gold);color:#000}
+    .img-btn.sh,.img-btn.vw{background:rgba(255,255,255,.15);color:#fff}
+    .img-btn:hover{transform:scale(1.1)}
+    .img-cat-badge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--gold2);border:1px solid rgba(201,168,76,.2)}
+
+    /* SKELETON */
+    .skeleton-item{break-inside:avoid;margin-bottom:14px;border-radius:var(--radius);background:linear-gradient(90deg,var(--bg2) 25%,var(--surface) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+    /* LOAD MORE */
+    .load-more-wrap{text-align:center;padding:32px 0}
+    .load-more-btn{background:transparent;border:1px solid var(--gold);color:var(--gold2);padding:12px 36px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:var(--t)}
+    .load-more-btn:hover{background:var(--gold);color:#000;box-shadow:0 0 24px rgba(201,168,76,.3)}
+    .load-more-btn:disabled{opacity:.5;cursor:not-allowed}
+
+    /* MODAL */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s ease}
+    .modal-bg.open{opacity:1;pointer-events:all}
+    .modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;max-width:900px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.6);transform:scale(.95);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+    .modal-bg.open .modal{transform:scale(1)}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);flex-shrink:0;gap:12px}
+    .modal-cat-badge{background:var(--gold-dim);border:1px solid rgba(201,168,76,.3);color:var(--gold2);padding:4px 12px;border-radius:50px;font-size:12px;white-space:nowrap}
+    .modal-title{font-family:'Noto Nastaliq Urdu',serif;font-size:15px;color:var(--text2);direction:rtl;flex:1}
+    .modal-close{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:var(--t);flex-shrink:0}
+    .modal-close:hover{background:var(--surface);color:var(--cream)}
+    .modal-body{flex:1;overflow-y:auto;display:flex;align-items:center;justify-content:center}
+    .modal-img{width:100%;max-height:65vh;object-fit:contain;display:block}
+    .modal-footer{padding:20px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;flex-shrink:0}
+    .modal-info{font-size:13px;color:var(--text3)}
+    .modal-actions{display:flex;gap:10px}
+    .action-btn{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:var(--t);border:none}
+    .action-btn.primary{background:var(--gold);color:#000;font-weight:600}
+    .action-btn.primary:hover{background:var(--gold2)}
+    .action-btn.secondary{background:var(--surface);border:1px solid var(--border);color:var(--text)}
+    .action-btn.secondary:hover{border-color:var(--gold);color:var(--gold2)}
+    .modal-nav{display:flex;gap:8px}
+    .nav-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:var(--t)}
+    .nav-btn:hover{border-color:var(--gold);color:var(--gold2)}
+
+    /* FOOTER */
+    footer{border-top:1px solid var(--border);padding:48px 24px 24px;max-width:1400px;margin:0 auto}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:40px}
+    @media(max-width:700px){.footer-grid{grid-template-columns:1fr;gap:24px}}
+    .footer-brand p{font-size:14px;color:var(--text3);line-height:1.7;margin-top:12px;max-width:280px}
+    .footer-heading{font-family:'Playfair Display',serif;font-size:14px;color:var(--cream);margin-bottom:14px}
+    .footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+    .footer-links a{color:var(--text3);text-decoration:none;font-size:13px;transition:var(--t)}
+    .footer-links a:hover{color:var(--gold2)}
+    .footer-bottom{border-top:1px solid var(--border);padding-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--text3)}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg2);border:1px solid var(--gold);color:var(--gold2);padding:12px 24px;border-radius:50px;font-size:13px;font-family:'DM Sans',sans-serif;z-index:2000;transition:transform .3s ease;box-shadow:var(--shadow)}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+
+    /* EMPTY */
+    .empty-state{text-align:center;padding:80px 24px;color:var(--text3)}
+    .empty-state-icon{font-size:48px;margin-bottom:16px}
+    .empty-state h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--text2);margin-bottom:8px}
+
+    /* AD SLOT */
+    .ad-slot{background:var(--bg2);border:1px dashed var(--border);border-radius:var(--radius);padding:24px;text-align:center;color:var(--text3);font-size:12px;margin:24px 0}
+
+    @media(max-width:600px){.logo-urdu,.hero-stats{display:none}.search-wrap{max-width:200px}.hero h1{font-size:28px}}
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo" onclick="resetToHome()">
+    <div class="logo-icon">🌸</div>
+    <div>
+      <div class="logo-text">Shayari Gallery</div>
+      <span class="logo-urdu">شاعری گیلری</span>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search poetry, quotes, designs…" oninput="onSearch(this.value)"/>
+  </div>
+  <div class="nav-right">
+    <div class="cat-dropdown">
+      <button class="cat-btn" onclick="toggleCatMenu()">📂 Categories ▾</button>
+      <div class="cat-menu" id="catMenu"></div>
+    </div>
+    <a class="admin-link" href="/admin.html">⚙ Admin</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">✨ Visual Poetry Gallery</div>
+  <h1>Beautiful <em>Urdu Poetry</em><br>&amp; Visual Art</h1>
+  <div class="hero-urdu">خوبصورت شاعری اور فن کی دنیا میں خوش آمدید</div>
+  <p>Discover stunning Urdu poetry images, Islamic quotes, Mehndi designs and more. Browse, download &amp; share.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num" id="statTotal">—</div><div class="stat-label">IMAGES</div></div>
+    <div class="stat"><div class="stat-num" id="statCats">—</div><div class="stat-label">CATEGORIES</div></div>
+    <div class="stat"><div class="stat-num">Free</div><div class="stat-label">FOREVER</div></div>
+  </div>
+</section>
+
+<section class="categories-section">
+  <div class="section-title"><span>🗂️ Browse Categories</span></div>
+  <div class="cat-grid" id="catGrid"></div>
+</section>
+
+<div style="padding:0 24px;max-width:1400px;margin:0 auto">
+  <div class="ad-slot"><!-- AdSense: replace with ca-pub code --><span>Advertisement Space · 728×90</span></div>
+</div>
+
+<section class="gallery-section" id="gallerySection">
+  <div class="gallery-controls">
+    <div class="active-filter">
+      <span>Showing:</span>
+      <span class="filter-tag" id="filterLabel">All Categories</span>
+      <span id="imageCount" style="color:var(--text3);font-size:13px"></span>
+    </div>
+    <select class="sort-select" id="sortSelect" onchange="onSortChange()">
+      <option value="newest">Newest First</option>
+      <option value="popular">Most Popular</option>
+      <option value="random">Shuffle</option>
+    </select>
+  </div>
+  <div class="masonry" id="masonryGrid"></div>
+  <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
+    <button class="load-more-btn" id="loadMoreBtn" onclick="loadNextPage()">Load More Images</button>
+  </div>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <div class="empty-state-icon">🔍</div>
+    <h3>No images found</h3>
+    <p id="emptyMsg">Upload images from the admin panel to get started.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo" style="cursor:default">
+        <div class="logo-icon">🌸</div>
+        <div>
+          <div class="logo-text">Shayari Gallery</div>
+          <span class="logo-urdu">شاعری گیلری</span>
+        </div>
+      </div>
+      <p>A visual gallery for Urdu poetry lovers, Islamic art enthusiasts, and culture appreciators. Free to browse, download &amp; share.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Categories</div>
+      <ul class="footer-links" id="footerCatLinks"></ul>
+    </div>
+    <div>
+      <div class="footer-heading">About</div>
+      <ul class="footer-links">
+        <li><a href="#">How to Download</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="/admin.html">Admin Panel</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Shayari Gallery — شاعری گیلری</span>
+    <span>Made with ♥ for Urdu poetry lovers</span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="onModalBgClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-cat-badge" id="modalCat"></span>
+      <span class="modal-title" id="modalTitle"></span>
+      <div class="modal-nav">
+        <button class="nav-btn" onclick="modalStep(-1)">←</button>
+        <button class="nav-btn" onclick="modalStep(1)">→</button>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body"><img class="modal-img" id="modalImg" src="" alt=""/></div>
+    <div class="modal-footer">
+      <div class="modal-info" id="modalInfo"></div>
+      <div class="modal-actions">
+        <button class="action-btn secondary" onclick="shareActive()">🔗 Share</button>
+        <button class="action-btn primary" onclick="downloadActive()">⬇ Download</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let categories  = [];
+let allImages   = [];          // current filtered set displayed
+let apiTotal    = 0;           // total matching in DB
+let currentPage = 0;
+const PAGE      = 20;          // images per page
+
+let activeCat    = null;
+let activeSearch = '';
+let activeSort   = 'newest';
+let modalIdx     = 0;
+let searchTimer  = null;
+
+// ═══════════════════════════════════════════════════════
+// BOOTSTRAP
+// ═══════════════════════════════════════════════════════
+async function boot() {
+  await fetchCategories();
+  await fetchPage(true);
+}
+
+// ═══════════════════════════════════════════════════════
+// CATEGORIES
+// ═══════════════════════════════════════════════════════
+async function fetchCategories() {
+  try {
+    const r = await fetch('/api/categories');
+    const d = await r.json();
+    categories = d.categories || [];
+  } catch(e) { categories = []; }
+  renderCatMenu();
+  renderCatCards();
+  renderFooterLinks();
+  document.getElementById('statCats').textContent = categories.length || '—';
+}
+
+function renderCatMenu() {
+  const menu = document.getElementById('catMenu');
+  menu.innerHTML =
+    `<a href="#" onclick="filterCat(null);return false">🏠 All Categories</a>` +
+    categories.map(c =>
+      `<a href="#" onclick="filterCat('${c.slug}');return false">${c.emoji} ${c.name}</a>`
+    ).join('');
+}
+
+function renderCatCards() {
+  document.getElementById('catGrid').innerHTML = categories.map(c => `
+    <a class="cat-card${activeCat===c.slug?' active':''}" href="#"
+       onclick="filterCat('${c.slug}');return false" data-slug="${c.slug}">
+      <span class="cat-emoji">${c.emoji}</span>
+      <div class="cat-name">${c.name}</div>
+      <div class="cat-urdu">${c.name_urdu||''}</div>
+      <div class="cat-count">${c.emoji} Browse</div>
+    </a>`).join('');
+  renderFooterLinks();
+}
+
+function renderFooterLinks() {
+  document.getElementById('footerCatLinks').innerHTML = categories.map(c =>
+    `<li><a href="#" onclick="filterCat('${c.slug}');return false">${c.emoji} ${c.name}</a></li>`
+  ).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// FETCH IMAGES FROM API
+// ═══════════════════════════════════════════════════════
+async function fetchPage(reset = false) {
+  if (reset) { currentPage = 0; allImages = []; }
+
+  const btn = document.getElementById('loadMoreBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+
+  if (reset) showSkeletons();
+
+  const params = new URLSearchParams({
+    status : 'live',
+    page   : currentPage,
+    limit  : PAGE
+  });
+  if (activeCat)    params.set('category', activeCat);
+  if (activeSearch) params.set('search',   activeSearch);
+
+  try {
+    const r = await fetch('/api/images?' + params);
+    const d = await r.json();
+    let imgs = d.images || [];
+    apiTotal = d.total || 0;
+
+    // Client-side sort for random/popular (API returns newest-first)
+    if (activeSort === 'popular') imgs.sort((a,b) => (b.views||0)-(a.views||0));
+    if (activeSort === 'random')  imgs.sort(() => Math.random()-.5);
+
+    if (reset) {
+      allImages = imgs;
+      document.getElementById('masonryGrid').innerHTML = '';
+    } else {
+      allImages = [...allImages, ...imgs];
+    }
+
+    renderImages(imgs, reset);
+    document.getElementById('statTotal').textContent = apiTotal;
+
+    const loaded = currentPage * PAGE + imgs.length;
+    const hasMore = loaded < apiTotal;
+    document.getElementById('loadMoreWrap').style.display = hasMore ? 'block' : 'none';
+    document.getElementById('emptyState').style.display   = allImages.length === 0 ? 'block' : 'none';
+
+    updateFilterLabel();
+    currentPage++;
+  } catch(e) {
+    console.error(e);
+  }
+
+  if (btn) { btn.disabled = false; btn.textContent = 'Load More Images'; }
+}
+
+function showSkeletons() {
+  const h = [200,280,240,320,260,300,220,340,250,290,230,310];
+  document.getElementById('masonryGrid').innerHTML =
+    h.map((ht,i) => `<div class="skeleton-item" style="height:${ht}px"></div>`).join('');
+}
+
+function renderImages(imgs, reset) {
+  const grid = document.getElementById('masonryGrid');
+  if (reset) grid.innerHTML = '';
+  imgs.forEach(img => {
+    const cat = categories.find(c => c.slug === img.category);
+    const emoji = cat?.emoji || '📂';
+    const catName = cat?.name || img.category;
+    const isUrdu = /[\u0600-\u06FF]/.test(img.title||'');
+    const div = document.createElement('div');
+    div.className = 'masonry-item';
+    div.dataset.id = img.id;
+    div.innerHTML = `
+      <img src="${img.url}" alt="${escHtml(img.title||'')}" loading="lazy"
+           onerror="this.style.display='none'"/>
+      <div class="img-cat-badge">${emoji} ${catName}</div>
+      <div class="img-overlay">
+        <div class="${isUrdu?'img-title':'img-title-en'}">${escHtml(img.title||'')}</div>
+        <div class="img-actions">
+          <button class="img-btn vw"  onclick="openModal(event,'${img.id}')" title="View">🔍</button>
+          <button class="img-btn sh"  onclick="doShare(event,'${img.id}')"  title="Share">🔗</button>
+          <button class="img-btn dl"  onclick="doDownload(event,'${img.id}')" title="Download">⬇</button>
+        </div>
+      </div>`;
+    div.addEventListener('click', () => openModal(null, img.id));
+    grid.appendChild(div);
+  });
+}
+
+function loadNextPage() { fetchPage(false); }
+
+// ═══════════════════════════════════════════════════════
+// FILTER / SEARCH / SORT
+// ═══════════════════════════════════════════════════════
+function filterCat(slug) {
+  activeCat = slug; activeSearch = '';
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('.cat-card').forEach(c =>
+    c.classList.toggle('active', c.dataset.slug === slug));
+  closeCatMenu();
+  document.getElementById('gallerySection').scrollIntoView({behavior:'smooth'});
+  fetchPage(true);
+}
+
+function onSearch(val) {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    activeSearch = val.trim();
+    activeCat = null;
+    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+    fetchPage(true);
+  }, 400);
+}
+
+function onSortChange() {
+  activeSort = document.getElementById('sortSelect').value;
+  fetchPage(true);
+}
+
+function resetToHome() {
+  activeCat = null; activeSearch = '';
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+  fetchPage(true);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateFilterLabel() {
+  const cat = categories.find(c => c.slug === activeCat);
+  document.getElementById('filterLabel').textContent =
+    activeSearch ? `"${activeSearch}"` :
+    cat ? `${cat.emoji} ${cat.name}` : 'All Categories';
+  document.getElementById('imageCount').textContent = `(${apiTotal} images)`;
+}
+
+// ═══════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════
+function openModal(e, id) {
+  if (e) e.stopPropagation();
+  modalIdx = allImages.findIndex(i => i.id === id);
+  if (modalIdx === -1) return;
+  renderModal();
+  document.getElementById('modalBg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderModal() {
+  const img = allImages[modalIdx];
+  if (!img) return;
+  const cat = categories.find(c => c.slug === img.category);
+  document.getElementById('modalImg').src    = img.url;
+  document.getElementById('modalImg').alt    = img.title || '';
+  document.getElementById('modalTitle').textContent = img.title || '';
+  document.getElementById('modalCat').textContent   = `${cat?.emoji||'📂'} ${cat?.name||img.category}`;
+  document.getElementById('modalInfo').textContent  = `${img.author||''}${img.author?' · ':''}${(img.views||0).toLocaleString()} views`;
+}
+
+function closeModal()              { document.getElementById('modalBg').classList.remove('open'); document.body.style.overflow = ''; }
+function onModalBgClick(e)         { if (e.target === document.getElementById('modalBg')) closeModal(); }
+function modalStep(d)              { modalIdx = (modalIdx+d+allImages.length)%allImages.length; renderModal(); }
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('modalBg').classList.contains('open')) return;
+  if (e.key==='Escape')      closeModal();
+  if (e.key==='ArrowLeft')   modalStep(-1);
+  if (e.key==='ArrowRight')  modalStep(1);
+});
+
+// ═══════════════════════════════════════════════════════
+// DOWNLOAD & SHARE
+// ═══════════════════════════════════════════════════════
+function downloadActive() { const img=allImages[modalIdx]; if(img) triggerDownload(img); }
+function doDownload(e,id) { e.stopPropagation(); const img=allImages.find(i=>i.id===id); if(img) triggerDownload(img); }
+function triggerDownload(img) {
+  const a=document.createElement('a');
+  a.href=img.url; a.download=`shayari-gallery-${img.id}.jpg`; a.target='_blank';
+  a.click(); toast('⬇ Downloading…');
+}
+
+function shareActive()    { const img=allImages[modalIdx]; if(img) triggerShare(img); }
+function doShare(e,id)    { e.stopPropagation(); const img=allImages.find(i=>i.id===id); if(img) triggerShare(img); }
+function triggerShare(img) {
+  const url = `${location.origin}?img=${img.id}`;
+  if (navigator.share) navigator.share({title:img.title, url});
+  else navigator.clipboard.writeText(url).then(()=>toast('🔗 Link copied!'));
+}
+
+// ═══════════════════════════════════════════════════════
+// CAT DROPDOWN
+// ═══════════════════════════════════════════════════════
+function toggleCatMenu() { document.getElementById('catMenu').classList.toggle('open'); }
+function closeCatMenu()  { document.getElementById('catMenu').classList.remove('open'); }
+document.addEventListener('click', e => { if(!e.target.closest('.cat-dropdown')) closeCatMenu(); });
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+let toastTimer;
+function toast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ═══════════════════════════════════════════════════════
+// UTIL
+// ═══════════════════════════════════════════════════════
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════════════
+boot();
+</script>
+</body>
+</html>

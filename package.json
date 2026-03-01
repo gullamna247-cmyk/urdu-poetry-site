@@ -1,0 +1,18 @@
+{
+  "name": "shayari-gallery",
+  "version": "2.0.0",
+  "description": "Shayari Gallery — Production build with Cloudinary + Supabase",
+  "private": true,
+  "engines": { "node": "18.x" },
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "cloudinary": "^2.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "multiparty": "^4.2.3"
+  }
+}

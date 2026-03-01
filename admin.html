@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Shayari Gallery</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --bg:#09080a;--bg2:#111013;--bg3:#1a181c;--surface:#222024;
+      --border:#2c2a2e;--border2:#3a383c;
+      --gold:#c9a84c;--gold2:#e8c96a;--gold-dim:rgba(201,168,76,.13);--gold-glow:rgba(201,168,76,.3);
+      --cream:#f0ebe0;--text:#e8e0d0;--text2:#a09890;--text3:#5e5a58;
+      --green:#4a9c6a;--green-dim:rgba(74,156,106,.13);
+      --red:#c96a4a;--red-dim:rgba(201,106,74,.13);
+      --radius:14px;--radius-sm:8px;
+      --shadow:0 8px 32px rgba(0,0,0,.55);
+      --t:all .22s cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:var(--bg2)}
+    ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+
+    /* ── LOGIN ── */
+    #loginScreen{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(201,168,76,.07) 0%,transparent 70%),var(--bg);
+      padding:24px;
+    }
+    .login-card{
+      background:var(--bg2);border:1px solid var(--border2);border-radius:20px;
+      padding:48px 40px;width:100%;max-width:400px;
+      box-shadow:0 32px 80px rgba(0,0,0,.6);
+    }
+    .login-logo{text-align:center;margin-bottom:32px}
+    .login-icon{width:56px;height:56px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:16px;display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px}
+    .login-title{font-family:'Playfair Display',serif;font-size:26px;color:var(--cream);margin-bottom:4px}
+    .login-sub{font-size:13px;color:var(--text3)}
+    .login-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-dim);border:1px solid rgba(201,168,76,.2);border-radius:50px;padding:4px 12px;font-size:11px;color:var(--gold);font-family:'JetBrains Mono',monospace;margin-top:8px}
+    .field{margin-bottom:16px}
+    .field label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500;letter-spacing:.3px}
+    .field input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:var(--t)}
+    .field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim)}
+    .btn-primary{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:var(--radius-sm);padding:13px;color:#09080a;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:var(--t);letter-spacing:.2px}
+    .btn-primary:hover:not(:disabled){opacity:.9;box-shadow:0 8px 24px var(--gold-glow);transform:translateY(-1px)}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .error-msg{background:var(--red-dim);border:1px solid rgba(201,106,74,.3);color:var(--red);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
+    .error-msg.show{display:block}
+
+    /* ── LAYOUT ── */
+    #adminScreen{display:none;min-height:100vh}
+    .sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;z-index:50;transition:var(--t)}
+    .sidebar-logo{padding:0 20px 24px;border-bottom:1px solid var(--border);margin-bottom:16px}
+    .sidebar-logo .li{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;margin-right:9px;vertical-align:middle}
+    .sidebar-logo span{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold2);vertical-align:middle}
+    .sidebar-label{font-size:10px;color:var(--text3);letter-spacing:1px;font-weight:600;padding:0 20px 8px;text-transform:uppercase}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;color:var(--text2);cursor:pointer;transition:var(--t);border-left:2px solid transparent;font-size:14px;text-decoration:none;background:none;border-right:none;border-top:none;border-bottom:none;width:100%;text-align:left}
+    .nav-item:hover{color:var(--cream);background:var(--bg3)}
+    .nav-item.active{color:var(--gold2);border-left-color:var(--gold);background:var(--gold-dim)}
+    .nav-item .icon{font-size:16px;width:20px;text-align:center}
+    .sidebar-bottom{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border)}
+    .user-pill{display:flex;align-items:center;gap:10px}
+    .user-avatar{width:32px;height:32px;background:var(--gold-dim);border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
+    .user-name{font-size:13px;color:var(--cream);font-weight:500}
+    .user-role{font-size:11px;color:var(--text3)}
+    .logout-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:6px;transition:var(--t);border-radius:6px;margin-left:auto}
+    .logout-btn:hover{color:var(--red);background:var(--red-dim)}
+    .main{margin-left:240px;padding:32px;min-height:100vh}
+    .page{display:none}
+    .page.active{display:block;animation:fadeIn .25s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .page-header{margin-bottom:28px}
+    .page-header h1{font-family:'Playfair Display',serif;font-size:28px;color:var(--cream);margin-bottom:4px}
+    .page-header p{font-size:14px;color:var(--text3)}
+
+    /* BANNER */
+    .banner{border-radius:var(--radius-sm);padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:24px;font-size:13px}
+    .banner.error{background:var(--red-dim);border:1px solid rgba(201,106,74,.3);color:var(--red)}
+    .banner.success{background:var(--green-dim);border:1px solid rgba(74,156,106,.3);color:var(--green)}
+    .banner.warn{background:var(--gold-dim);border:1px solid rgba(201,168,76,.3);color:var(--gold2)}
+    .banner a{color:inherit;font-weight:600}
+
+    /* STATS */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+    @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+    .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;transition:var(--t)}
+    .stat-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+    .stat-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;background:var(--gold-dim);transform:translate(20px,-20px)}
+    .stat-icon{font-size:20px;margin-bottom:12px}
+    .stat-val{font-family:'Playfair Display',serif;font-size:32px;color:var(--cream);font-weight:700;margin-bottom:4px}
+    .stat-lbl{font-size:12px;color:var(--text3)}
+
+    /* CARD */
+    .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+    .card-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--cream);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .card+.card{margin-top:20px}
+
+    /* UPLOAD */
+    .upload-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:24px;align-items:start}
+    @media(max-width:900px){.upload-grid{grid-template-columns:1fr}}
+    .drop-zone{border:2px dashed var(--border2);border-radius:var(--radius);padding:40px 24px;text-align:center;cursor:pointer;transition:var(--t);position:relative;overflow:hidden}
+    .drop-zone:hover,.drop-zone.drag-over{border-color:var(--gold);background:var(--gold-dim)}
+    .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .drop-icon{font-size:36px;margin-bottom:12px}
+    .drop-text{font-size:14px;color:var(--text2);margin-bottom:6px}
+    .drop-hint{font-size:12px;color:var(--text3)}
+    .drop-formats{display:flex;justify-content:center;gap:6px;margin-top:12px;flex-wrap:wrap}
+    .fmt-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:3px 8px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text3)}
+    #previewWrap{margin-top:16px;display:none}
+    .preview-img{width:100%;border-radius:var(--radius-sm);border:1px solid var(--border2);object-fit:cover;max-height:240px}
+    .preview-info{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--text3)}
+    .change-btn{font-size:12px;color:var(--gold);cursor:pointer;background:none;border:none;padding:0;font-family:'DM Sans',sans-serif}
+    .change-btn:hover{text-decoration:underline}
+
+    /* FORM */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+    .form-field{margin-bottom:14px}
+    .form-field.full{grid-column:1/-1}
+    .form-field label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500;letter-spacing:.3px}
+    .form-field label .req{color:var(--gold);margin-left:2px}
+    .form-field input,.form-field select,.form-field textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:var(--t);resize:vertical}
+    .form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim)}
+    .form-field select option{background:var(--bg3)}
+    .form-field textarea{min-height:80px}
+
+    /* TAGS */
+    .tags-input-wrap{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px;display:flex;flex-wrap:wrap;gap:6px;min-height:46px;cursor:text;transition:var(--t)}
+    .tags-input-wrap:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim)}
+    .tag-chip{background:var(--gold-dim);border:1px solid rgba(201,168,76,.3);color:var(--gold2);border-radius:50px;padding:3px 10px;font-size:12px;display:flex;align-items:center;gap:5px}
+    .tag-chip button{background:none;border:none;color:var(--gold);cursor:pointer;font-size:14px;line-height:1;padding:0}
+    .tags-real-input{border:none;background:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;min-width:120px;flex:1}
+
+    /* TOGGLE */
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg3);border-radius:var(--radius-sm);border:1px solid var(--border2)}
+    .toggle-label{font-size:14px;color:var(--text2)}
+    .toggle{width:44px;height:24px;background:var(--border2);border-radius:50px;position:relative;cursor:pointer;transition:var(--t);border:none}
+    .toggle.on{background:var(--gold)}
+    .toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:var(--t)}
+    .toggle.on::after{transform:translateX(20px)}
+
+    /* BUTTONS */
+    .upload-actions{display:flex;gap:10px;margin-top:20px}
+    .btn{display:flex;align-items:center;gap:7px;padding:11px 20px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:var(--t);border:none;font-weight:500}
+    .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#09080a;font-weight:600}
+    .btn-gold:hover:not(:disabled){box-shadow:0 8px 24px var(--gold-glow);transform:translateY(-1px)}
+    .btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .btn-ghost{background:var(--surface);border:1px solid var(--border2);color:var(--text2)}
+    .btn-ghost:hover{color:var(--cream);border-color:var(--border2)}
+    .btn-sm{padding:7px 14px;font-size:12px}
+
+    /* PROGRESS */
+    .progress-wrap{display:none;margin-top:16px}
+    .progress-wrap.show{display:block}
+    .progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px}
+    .progress-bar{height:4px;background:var(--border2);border-radius:2px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:width .3s ease;width:0%}
+
+    /* TABLE */
+    .table-wrap{overflow-x:auto}
+    .img-table{width:100%;border-collapse:collapse;font-size:13px}
+    .img-table th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.5px;border-bottom:1px solid var(--border);text-transform:uppercase}
+    .img-table td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+    .img-table tr:last-child td{border-bottom:none}
+    .img-table tr:hover td{background:var(--bg3)}
+    .thumb{width:46px;height:46px;border-radius:8px;overflow:hidden;border:1px solid var(--border2);flex-shrink:0;background:var(--bg3)}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .img-row-info{display:flex;align-items:center;gap:12px}
+    .img-row-title{font-size:13px;color:var(--cream);font-weight:500;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .img-row-meta{font-size:11px;color:var(--text3);margin-top:2px}
+    .cat-pill{display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border2);border-radius:50px;padding:3px 10px;font-size:11px;color:var(--text2)}
+    .status-pill{display:inline-flex;align-items:center;gap:5px;border-radius:50px;padding:3px 10px;font-size:11px;font-weight:500;cursor:pointer;border:none;transition:var(--t)}
+    .status-pill.live{background:var(--green-dim);color:var(--green);border:1px solid rgba(74,156,106,.25)}
+    .status-pill.draft{background:var(--border);color:var(--text3);border:1px solid var(--border2)}
+    .status-pill:hover{opacity:.8}
+    .row-actions{display:flex;gap:6px}
+    .row-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border2);background:none;color:var(--text2);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:var(--t)}
+    .row-btn:hover{background:var(--surface);color:var(--cream)}
+    .row-btn.danger:hover{background:var(--red-dim);color:var(--red);border-color:rgba(201,106,74,.3)}
+
+    /* EMPTY */
+    .empty-state{text-align:center;padding:56px 24px;color:var(--text3)}
+    .empty-state .ei{font-size:36px;margin-bottom:12px}
+    .empty-state h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--text2);margin-bottom:6px}
+
+    /* SETUP */
+    .steps{display:flex;flex-direction:column;gap:12px}
+    .step{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;display:flex;align-items:flex-start;gap:14px}
+    .step-num{width:28px;height:28px;border-radius:50%;background:var(--gold-dim);border:1px solid rgba(201,168,76,.3);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+    .step h4{font-size:14px;color:var(--cream);margin-bottom:5px}
+    .step p{font-size:12px;color:var(--text3);line-height:1.7}
+    .code{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);margin-top:8px;overflow-x:auto;white-space:pre;position:relative}
+    .copy-btn{position:absolute;top:8px;right:8px;background:var(--surface);border:1px solid var(--border2);color:var(--text2);border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;transition:var(--t)}
+    .copy-btn:hover{color:var(--gold2)}
+    .env-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border-radius:6px;border:1px solid var(--border);margin-top:6px;flex-wrap:wrap}
+    .env-key{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);flex-shrink:0}
+    .env-val{font-size:12px;color:var(--text3);flex:1}
+    .tag-req{font-size:10px;color:var(--red);background:var(--red-dim);padding:2px 6px;border-radius:4px}
+    .tag-auto{font-size:10px;color:var(--green);background:var(--green-dim);padding:2px 6px;border-radius:4px}
+    .arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center}
+    .arch-box{padding:18px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)}
+    .arch-box .ab-icon{font-size:26px;margin-bottom:8px}
+    .arch-box .ab-name{font-size:14px;color:var(--cream);font-weight:600}
+    .arch-box .ab-sub{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:28px;right:28px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:13px 18px;font-size:13px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);z-index:1000;transform:translateX(120px);opacity:0;transition:var(--t);max-width:320px}
+    .toast.show{transform:translateX(0);opacity:1}
+    .toast.success{border-color:rgba(74,156,106,.4);color:var(--green)}
+    .toast.error{border-color:rgba(201,106,74,.4);color:var(--red)}
+    .toast.info{border-color:rgba(201,168,76,.4);color:var(--gold2)}
+
+    @media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:24px 16px}.mobile-toggle{display:flex}}
+    .mobile-toggle{display:none;position:fixed;top:14px;left:14px;z-index:200;width:40px;height:40px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;cursor:pointer;font-size:18px;align-items:center;justify-content:center}
+
+    /* CAT MANAGER */
+    .cat-row{display:flex;align-items:center;gap:14px;padding:13px;border-bottom:1px solid var(--border);transition:var(--t)}
+    .cat-row:hover{background:var(--bg3)}
+    .cat-row:last-child{border-bottom:none}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-icon">🌸</div>
+      <div class="login-title">Admin Portal</div>
+      <div class="login-sub">Shayari Gallery · شاعری گیلری</div>
+      <div class="login-badge">🔐 Server-side Auth</div>
+    </div>
+    <div class="error-msg" id="loginError">Incorrect password. Please try again.</div>
+    <div class="field">
+      <label>Admin Password</label>
+      <input type="password" id="pwInput" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="btn-primary" id="loginBtn" onclick="doLogin()">Sign In →</button>
+    <p style="text-align:center;margin-top:14px;font-size:11px;color:var(--text3)">
+      Password verified server-side · Never stored in browser
+    </p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminScreen">
+  <button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="li">🌸</div>
+      <span>Shayari Admin</span>
+    </div>
+    <div class="sidebar-label">Navigation</div>
+    <button class="nav-item active" data-page="dashboard" onclick="nav('dashboard')"><span class="icon">📊</span>Dashboard</button>
+    <button class="nav-item" data-page="upload" onclick="nav('upload')"><span class="icon">⬆️</span>Upload Image</button>
+    <button class="nav-item" data-page="images" onclick="nav('images')"><span class="icon">🖼️</span>Manage Images</button>
+    <button class="nav-item" data-page="categories" onclick="nav('categories')"><span class="icon">📂</span>Categories</button>
+    <button class="nav-item" data-page="setup" onclick="nav('setup')"><span class="icon">🚀</span>Setup Guide</button>
+    <div style="padding:8px 12px">
+      <a class="nav-item" href="/" target="_blank" style="border-radius:8px;text-decoration:none"><span class="icon">🌐</span>View Website</a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-pill">
+        <div class="user-avatar">👤</div>
+        <div><div class="user-name">Administrator</div><div class="user-role">Full Access</div></div>
+        <button class="logout-btn" onclick="doLogout()" title="Logout">↩</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header"><h1>Dashboard</h1><p>Live overview from Supabase</p></div>
+      <div id="setupBanner"></div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">🖼️</div><div class="stat-val" id="sTotal">—</div><div class="stat-lbl">Total Images</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val" id="sLive">—</div><div class="stat-lbl">Live</div></div>
+        <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-val" id="sDraft">—</div><div class="stat-lbl">Drafts</div></div>
+        <div class="stat-card"><div class="stat-icon">📂</div><div class="stat-val" id="sCats">—</div><div class="stat-lbl">Categories</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 Recent Uploads</div>
+        <div id="recentList"><div class="empty-state"><div class="ei">⏳</div><h3>Loading...</h3></div></div>
+      </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div class="page" id="page-upload">
+      <div class="page-header"><h1>Upload Image</h1><p>Uploads permanently to Cloudinary · Metadata saved in Supabase</p></div>
+      <div class="upload-grid">
+        <div>
+          <div class="card">
+            <div class="card-title">🖼️ Select Image</div>
+            <div class="drop-zone" id="dropZone">
+              <input type="file" id="fileInput" accept="image/*" onchange="onFileSelect(this.files[0])"/>
+              <div id="dropContent"><div class="drop-icon">📁</div><div class="drop-text">Click or drag & drop</div><div class="drop-hint">Max 15 MB</div><div class="drop-formats"><span class="fmt-badge">JPG</span><span class="fmt-badge">PNG</span><span class="fmt-badge">WEBP</span><span class="fmt-badge">GIF</span></div></div>
+            </div>
+            <div id="previewWrap">
+              <img id="previewImg" class="preview-img" src="" alt=""/>
+              <div class="preview-info"><span id="previewName" style="color:var(--text2)"></span><button class="change-btn" onclick="clearFile()">✕ Remove</button></div>
+            </div>
+            <div class="progress-wrap" id="progWrap">
+              <div class="progress-label"><span id="progText">Uploading…</span><span id="progPct">0%</span></div>
+              <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📝 Image Details</div>
+          <div class="form-grid">
+            <div class="form-field full"><label>Title <span class="req">*</span></label><input type="text" id="fTitle" placeholder="e.g. دل کی بات"/></div>
+            <div class="form-field"><label>Author / Poet</label><input type="text" id="fAuthor" placeholder="e.g. غالب"/></div>
+            <div class="form-field"><label>Category <span class="req">*</span></label>
+              <select id="fCategory"><option value="">— Select —</option></select>
+            </div>
+            <div class="form-field full"><label>Description</label><textarea id="fDesc" placeholder="Short description or verse…"></textarea></div>
+            <div class="form-field full">
+              <label>Tags <small style="color:var(--text3)">(Enter to add)</small></label>
+              <div class="tags-input-wrap" id="tagsWrap" onclick="document.getElementById('tagIn').focus()">
+                <input class="tags-real-input" id="tagIn" placeholder="Add tag…" onkeydown="onTagKey(event)"/>
+              </div>
+            </div>
+            <div class="form-field full">
+              <div class="toggle-row">
+                <span class="toggle-label">Publish immediately (visible on website)</span>
+                <button class="toggle on" id="pubToggle" onclick="this.classList.toggle('on')"></button>
+              </div>
+            </div>
+          </div>
+          <div class="upload-actions">
+            <button class="btn btn-gold" id="uploadBtn" onclick="doUpload()">⬆ Upload & Publish</button>
+            <button class="btn btn-ghost" onclick="resetUploadForm()">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANAGE IMAGES -->
+    <div class="page" id="page-images">
+      <div class="page-header">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div><h1>Manage Images</h1><p>Live data from Supabase · Cloudinary CDN</p></div>
+          <button class="btn btn-gold btn-sm" onclick="nav('upload')">+ Upload New</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+        <select id="mgCat" onchange="loadImagesTable()" style="background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:8px 14px;border-radius:8px;font-size:13px;outline:none">
+          <option value="">All Categories</option>
+        </select>
+        <select id="mgStatus" onchange="loadImagesTable()" style="background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:8px 14px;border-radius:8px;font-size:13px;outline:none">
+          <option value="all">All Status</option>
+          <option value="live">Live</option>
+          <option value="draft">Draft</option>
+        </select>
+        <input id="mgSearch" oninput="debounceSearch()" placeholder="🔍 Search title…" style="background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:8px 14px;border-radius:8px;font-size:13px;outline:none;flex:1;min-width:180px"/>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="table-wrap">
+          <table class="img-table">
+            <thead><tr><th>Image</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="imgTableBody"></tbody>
+          </table>
+        </div>
+        <div id="imgEmpty" class="empty-state" style="display:none"><div class="ei">🖼️</div><h3>No images found</h3><p>Upload from the Upload page</p></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:12px;padding:16px" id="tablePager"></div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="page" id="page-categories">
+      <div class="page-header"><h1>Categories</h1><p>Saved in Supabase · Auto-appear on gallery</p></div>
+      <div class="card">
+        <div class="card-title">📂 All Categories</div>
+        <div id="catList"><div class="empty-state"><div class="ei">⏳</div><h3>Loading…</h3></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">➕ Add New Category</div>
+        <div class="form-grid">
+          <div class="form-field"><label>Name (English) <span class="req">*</span></label><input type="text" id="nName" placeholder="Nature Poetry"/></div>
+          <div class="form-field"><label>Urdu Name</label><input type="text" id="nUrdu" placeholder="فطرت کی شاعری"/></div>
+          <div class="form-field"><label>Slug (URL) <span class="req">*</span></label><input type="text" id="nSlug" placeholder="nature-poetry"/></div>
+          <div class="form-field"><label>Emoji</label><input type="text" id="nEmoji" placeholder="🌺" maxlength="4"/></div>
+          <div class="form-field full"><label>Description</label><input type="text" id="nDesc" placeholder="Short description…"/></div>
+        </div>
+        <button class="btn btn-gold" style="margin-top:8px" onclick="addCategory()">Add Category</button>
+      </div>
+    </div>
+
+    <!-- SETUP -->
+    <div class="page" id="page-setup">
+      <div class="page-header"><h1>🚀 Setup Guide</h1><p>Connect free services · $0/month</p></div>
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-title">🏗️ Architecture</div>
+        <div class="arch-grid">
+          <div class="arch-box"><div class="ab-icon">🌸</div><div class="ab-name">Vercel (Free)</div><div class="ab-sub">Hosts frontend + API routes<br>100 GB/month</div></div>
+          <div class="arch-box"><div class="ab-icon">☁️</div><div class="ab-name">Cloudinary (Free)</div><div class="ab-sub">Image CDN storage<br>25 GB bandwidth/month</div></div>
+          <div class="arch-box"><div class="ab-icon">🐘</div><div class="ab-name">Supabase (Free)</div><div class="ab-sub">PostgreSQL database<br>500 MB · 50k req/day</div></div>
+        </div>
+        <p style="text-align:center;margin-top:14px;font-size:12px;color:var(--text3)">Total cost: <strong style="color:var(--gold)">$0/month</strong></p>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 Step-by-Step</div>
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-num">1</div>
+            <div>
+              <h4>Create Supabase Project (Free)</h4>
+              <p>Go to <strong style="color:var(--gold)">supabase.com</strong> → New Project → Free tier<br>
+              Then: <strong>SQL Editor → New Query</strong> → paste the contents of <code style="color:var(--gold)">supabase-schema.sql</code> → Run</p>
+              <p style="margin-top:6px">Copy from Settings → API:</p>
+              <div class="env-row"><span class="env-key">Project URL</span><span class="env-val">https://xxxx.supabase.co</span></div>
+              <div class="env-row"><span class="env-key">service_role key</span><span class="env-val">eyJ… (secret, never expose to browser)</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">2</div>
+            <div>
+              <h4>Create Cloudinary Account (Free)</h4>
+              <p>Go to <strong style="color:var(--gold)">cloudinary.com</strong> → Free tier gives 25 GB storage + CDN<br>
+              Copy from Dashboard: Cloud Name, API Key, API Secret</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">3</div>
+            <div>
+              <h4>Generate bcrypt password hash</h4>
+              <p>Run this locally once to get your hashed password:</p>
+              <div class="code" id="hashCmd">node -e "const b=require('bcryptjs');console.log(b.hashSync('YOUR_STRONG_PASSWORD',12))"<button class="copy-btn" onclick="copyCode('hashCmd')">Copy</button></div>
+              <p style="margin-top:6px">The output (starting with $2b$) is your ADMIN_PASSWORD_HASH</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">4</div>
+            <div>
+              <h4>Set Vercel Environment Variables</h4>
+              <p>Vercel Dashboard → Your Project → Settings → Environment Variables</p>
+              <div class="env-row"><span class="env-key">SUPABASE_URL</span><span class="env-val">https://xxxx.supabase.co</span><span class="tag-req">Required</span></div>
+              <div class="env-row"><span class="env-key">SUPABASE_SERVICE_KEY</span><span class="env-val">eyJ… service_role key</span><span class="tag-req">Required</span></div>
+              <div class="env-row"><span class="env-key">CLOUDINARY_CLOUD_NAME</span><span class="env-val">your-cloud-name</span><span class="tag-req">Required</span></div>
+              <div class="env-row"><span class="env-key">CLOUDINARY_API_KEY</span><span class="env-val">123456789012345</span><span class="tag-req">Required</span></div>
+              <div class="env-row"><span class="env-key">CLOUDINARY_API_SECRET</span><span class="env-val">abcdef…</span><span class="tag-req">Required</span></div>
+              <div class="env-row"><span class="env-key">ADMIN_PASSWORD_HASH</span><span class="env-val">$2b$12$… (from step 3)</span><span class="tag-req">Required</span></div>
+              <div class="env-row"><span class="env-key">JWT_SECRET</span><span class="env-val">any random 32+ char string</span><span class="tag-req">Required</span></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">5</div>
+            <div>
+              <h4>Deploy to Vercel</h4>
+              <div class="code" id="deployCmd">npm i -g vercel
+vercel login
+vercel --prod<button class="copy-btn" onclick="copyCode('deployCmd')">Copy</button></div>
+              <p style="margin-top:6px">Or push to GitHub → connect repo in Vercel dashboard → auto-deploys on every push</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num">✅</div>
+            <div>
+              <h4>Done! Fully production-ready</h4>
+              <p>• Upload from <strong style="color:var(--gold)">yourdomain.vercel.app/admin</strong><br>
+              • Images permanently on Cloudinary CDN<br>
+              • Metadata forever in Supabase PostgreSQL<br>
+              • Gallery auto-updates — no localStorage, no GitHub editing</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let token = sessionStorage.getItem('sg_jwt');
+let categories = [];
+let tags = [];
+let selectedFile = null;
+let searchTimer = null;
+let tablePage = 0;
+
+// Boot
+(function(){
+  if (token) showAdmin();
+})();
+
+// ══════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════
+async function doLogin() {
+  const pw = document.getElementById('pwInput').value;
+  if (!pw) return;
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Verifying…';
+  document.getElementById('loginError').classList.remove('show');
+
+  try {
+    const r = await apiFetch('/api/auth', 'POST', { password: pw }, false);
+    token = r.token;
+    sessionStorage.setItem('sg_jwt', token);
+    showAdmin();
+  } catch(e) {
+    document.getElementById('loginError').textContent = e.message || 'Invalid credentials';
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('pwInput').value = '';
+  }
+  btn.disabled = false; btn.textContent = 'Sign In →';
+}
+
+function doLogout() {
+  sessionStorage.removeItem('sg_jwt');
+  token = null;
+  document.getElementById('adminScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+
+async function showAdmin() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminScreen').style.display = 'block';
+  await loadCategories();
+  await loadDashboard();
+  await checkSetup();
+}
+
+// ══════════════════════════════════════════════════════
+// API HELPER
+// ══════════════════════════════════════════════════════
+async function apiFetch(path, method='GET', body=null, auth=true) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (auth && token) headers['Authorization'] = 'Bearer ' + token;
+  const opts = { method, headers };
+  if (body && !(body instanceof FormData)) opts.body = JSON.stringify(body);
+  else if (body instanceof FormData) {
+    delete headers['Content-Type']; // let browser set multipart boundary
+    opts.body = body;
+  }
+  const r = await fetch(path, opts);
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
+  return data;
+}
+
+// ══════════════════════════════════════════════════════
+// SETUP CHECK
+// ══════════════════════════════════════════════════════
+async function checkSetup() {
+  try {
+    const cfg = await apiFetch('/api/config', 'GET', null, false);
+    const banner = document.getElementById('setupBanner');
+    if (cfg.cloudinaryReady && cfg.supabaseReady && cfg.authReady) {
+      banner.innerHTML = `<div class="banner success">✅ All services connected — Cloudinary + Supabase + Auth are live!</div>`;
+    } else {
+      const missing = [];
+      if (!cfg.cloudinaryReady) missing.push('Cloudinary');
+      if (!cfg.supabaseReady)   missing.push('Supabase');
+      if (!cfg.authReady)       missing.push('Auth hash');
+      banner.innerHTML = `<div class="banner warn">⚠️ Missing: <strong>${missing.join(', ')}</strong> — <a href="#" onclick="nav('setup');return false">See Setup Guide</a> to add environment variables.</div>`;
+    }
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════
+function nav(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item[data-page='+id+']').forEach(n => n.classList.add('active'));
+  if (id === 'images')     loadImagesTable();
+  if (id === 'categories') loadCatManager();
+  if (id === 'dashboard')  loadDashboard();
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════
+async function loadDashboard() {
+  try {
+    const [all, live, draft] = await Promise.all([
+      apiFetch('/api/images?status=all&limit=1', 'GET', null, false),
+      apiFetch('/api/images?status=live&limit=1', 'GET', null, false),
+      apiFetch('/api/images?status=draft&limit=1', 'GET', null, false)
+    ]);
+    document.getElementById('sTotal').textContent = all.total ?? '—';
+    document.getElementById('sLive').textContent  = live.total ?? '—';
+    document.getElementById('sDraft').textContent = draft.total ?? '—';
+    document.getElementById('sCats').textContent  = categories.length;
+
+    // Recent 5
+    const recent = await apiFetch('/api/images?status=all&limit=5', 'GET', null, false);
+    const wrap = document.getElementById('recentList');
+    if (!recent.images?.length) {
+      wrap.innerHTML = `<div class="empty-state"><div class="ei">📤</div><h3>No uploads yet</h3><p>Go to Upload Image to add your first image</p></div>`;
+      return;
+    }
+    wrap.innerHTML = `<table class="img-table"><thead><tr><th>Image</th><th>Category</th><th>Status</th><th>Date</th></tr></thead><tbody>
+      ${recent.images.map(img => buildRow(img, false)).join('')}
+    </tbody></table>`;
+  } catch(e) { console.error(e); }
+}
+
+// ══════════════════════════════════════════════════════
+// CATEGORIES
+// ══════════════════════════════════════════════════════
+async function loadCategories() {
+  try {
+    const d = await apiFetch('/api/categories', 'GET', null, false);
+    categories = d.categories || [];
+    // Populate select dropdowns
+    const sel = document.getElementById('fCategory');
+    sel.innerHTML = '<option value="">— Select —</option>' +
+      categories.map(c => `<option value="${c.slug}">${c.emoji} ${c.name}</option>`).join('');
+    const mgSel = document.getElementById('mgCat');
+    mgSel.innerHTML = '<option value="">All Categories</option>' +
+      categories.map(c => `<option value="${c.slug}">${c.emoji} ${c.name}</option>`).join('');
+    document.getElementById('sCats').textContent = categories.length;
+  } catch(e) { console.error('loadCategories', e); }
+}
+
+async function loadCatManager() {
+  await loadCategories();
+  const wrap = document.getElementById('catList');
+  if (!categories.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="ei">📂</div><h3>No categories yet</h3></div>`;
+    return;
+  }
+  wrap.innerHTML = categories.map(c => {
+    const imgCount = ''; // could fetch counts if needed
+    return `<div class="cat-row">
+      <span style="font-size:22px">${c.emoji}</span>
+      <div style="flex:1">
+        <div style="font-size:14px;color:var(--cream);font-weight:500">${c.name}</div>
+        <div style="font-size:11px;color:var(--text3)">${c.name_urdu||''} · /${c.slug}</div>
+      </div>
+      <span class="status-pill ${c.active?'live':'draft'}" onclick="toggleCat('${c.id}','${c.active}')">● ${c.active?'Active':'Hidden'}</span>
+      <button class="row-btn danger" onclick="deleteCat('${c.id}','${c.name}')" title="Delete">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+async function addCategory() {
+  const name  = document.getElementById('nName').value.trim();
+  const slug  = document.getElementById('nSlug').value.trim().toLowerCase().replace(/\s+/g,'-');
+  const nameUrdu = document.getElementById('nUrdu').value.trim();
+  const emoji = document.getElementById('nEmoji').value.trim() || '📂';
+  const desc  = document.getElementById('nDesc').value.trim();
+  if (!name || !slug) { toast('Name and slug required', 'error'); return; }
+  try {
+    await apiFetch('/api/categories', 'POST', { name, slug, name_urdu: nameUrdu, emoji, description: desc });
+    toast('✅ Category added!', 'success');
+    ['nName','nUrdu','nSlug','nEmoji','nDesc'].forEach(id => document.getElementById(id).value = '');
+    await loadCatManager();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function toggleCat(id, active) {
+  try {
+    await apiFetch('/api/categories?id='+id, 'PATCH', { active: active === 'true' ? false : true });
+    toast('Updated', 'success');
+    await loadCatManager();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function deleteCat(id, name) {
+  if (!confirm(`Delete category "${name}"? Images won't be deleted.`)) return;
+  try {
+    await apiFetch('/api/categories?id='+id, 'DELETE');
+    toast('🗑️ Deleted', 'success');
+    await loadCatManager();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ══════════════════════════════════════════════════════
+// FILE SELECT
+// ══════════════════════════════════════════════════════
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f?.type.startsWith('image/')) onFileSelect(f); });
+
+function onFileSelect(file) {
+  if (!file) return;
+  if (file.size > 15 * 1024 * 1024) { toast('File too large (max 15 MB)', 'error'); return; }
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('previewImg').src = e.target.result;
+    document.getElementById('previewName').textContent = `${file.name} (${(file.size/1024).toFixed(0)} KB)`;
+    document.getElementById('previewWrap').style.display = 'block';
+    document.getElementById('dropZone').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearFile() {
+  selectedFile = null;
+  document.getElementById('previewWrap').style.display = 'none';
+  document.getElementById('dropZone').style.display = 'block';
+  document.getElementById('fileInput').value = '';
+}
+
+// ══════════════════════════════════════════════════════
+// TAGS
+// ══════════════════════════════════════════════════════
+function onTagKey(e) {
+  const inp = document.getElementById('tagIn');
+  if ((e.key === 'Enter' || e.key === ',') && inp.value.trim()) {
+    e.preventDefault();
+    const t = inp.value.trim().replace(/,/g,'');
+    if (t && !tags.includes(t)) { tags.push(t); renderTags(); }
+    inp.value = '';
+  }
+  if (e.key === 'Backspace' && !inp.value && tags.length) { tags.pop(); renderTags(); }
+}
+
+function renderTags() {
+  const wrap = document.getElementById('tagsWrap');
+  const inp  = document.getElementById('tagIn');
+  wrap.querySelectorAll('.tag-chip').forEach(c => c.remove());
+  tags.forEach((t, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${t}<button onclick="tags.splice(${i},1);renderTags()" type="button">×</button>`;
+    wrap.insertBefore(chip, inp);
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// UPLOAD — sends to /api/upload (Cloudinary + Supabase)
+// ══════════════════════════════════════════════════════
+async function doUpload() {
+  const title    = document.getElementById('fTitle').value.trim();
+  const category = document.getElementById('fCategory').value;
+  const author   = document.getElementById('fAuthor').value.trim();
+  const desc     = document.getElementById('fDesc').value.trim();
+  const isLive   = document.getElementById('pubToggle').classList.contains('on');
+
+  if (!title)     { toast('Title is required', 'error'); return; }
+  if (!category)  { toast('Select a category', 'error'); return; }
+  if (!selectedFile) { toast('Select an image file', 'error'); return; }
+
+  const btn = document.getElementById('uploadBtn');
+  btn.disabled = true; btn.textContent = '⏳ Uploading…';
+  setProgress(10, 'Preparing…');
+
+  const fd = new FormData();
+  fd.append('image',       selectedFile);
+  fd.append('title',       title);
+  fd.append('author',      author);
+  fd.append('category',    category);
+  fd.append('description', desc);
+  fd.append('tags',        JSON.stringify(tags));
+  fd.append('status',      isLive ? 'live' : 'draft');
+
+  setProgress(30, 'Uploading to Cloudinary…');
+
+  try {
+    // Upload via API (handles Cloudinary + Supabase)
+    const resp = await uploadWithProgress(fd);
+    setProgress(100, 'Done!');
+    toast(isLive ? '✅ Published to website!' : '📝 Saved as draft', 'success');
+    resetUploadForm();
+    await loadDashboard();
+  } catch(e) {
+    toast('Upload failed: ' + e.message, 'error');
+  }
+
+  btn.disabled = false; btn.textContent = '⬆ Upload & Publish';
+  setTimeout(() => document.getElementById('progWrap').classList.remove('show'), 1500);
+}
+
+function uploadWithProgress(formData) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/upload');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+
+    xhr.upload.onprogress = e => {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded / e.total) * 80) + 10;
+        setProgress(pct, `Uploading… ${pct}%`);
+      }
+    };
+    xhr.onload = () => {
+      try {
+        const data = JSON.parse(xhr.responseText);
+        if (xhr.status >= 200 && xhr.status < 300) resolve(data);
+        else reject(new Error(data.error || `HTTP ${xhr.status}`));
+      } catch { reject(new Error('Invalid server response')); }
+    };
+    xhr.onerror = () => reject(new Error('Network error'));
+    xhr.send(formData);
+  });
+}
+
+function setProgress(pct, text) {
+  document.getElementById('progWrap').classList.add('show');
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progPct').textContent  = pct + '%';
+  document.getElementById('progText').textContent = text;
+}
+
+function resetUploadForm() {
+  ['fTitle','fAuthor','fDesc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fCategory').value = '';
+  tags = []; renderTags();
+  clearFile();
+  if (!document.getElementById('pubToggle').classList.contains('on'))
+    document.getElementById('pubToggle').classList.add('on');
+}
+
+// ══════════════════════════════════════════════════════
+// IMAGES TABLE
+// ══════════════════════════════════════════════════════
+let debounceSearchTimer;
+function debounceSearch() {
+  clearTimeout(debounceSearchTimer);
+  debounceSearchTimer = setTimeout(loadImagesTable, 400);
+}
+
+async function loadImagesTable() {
+  tablePage = 0;
+  await fetchTablePage();
+}
+
+async function fetchTablePage() {
+  const cat    = document.getElementById('mgCat').value;
+  const status = document.getElementById('mgStatus').value;
+  const search = document.getElementById('mgSearch').value.trim();
+
+  const params = new URLSearchParams({ status, page: tablePage, limit: 20 });
+  if (cat)    params.set('category', cat);
+  if (search) params.set('search', search);
+
+  try {
+    const d = await apiFetch('/api/images?' + params, 'GET', null, false);
+    const tbody = document.getElementById('imgTableBody');
+    const empty = document.getElementById('imgEmpty');
+
+    if (!d.images?.length) {
+      tbody.innerHTML = ''; empty.style.display = 'block';
+      document.getElementById('tablePager').innerHTML = '';
+      return;
+    }
+    empty.style.display = 'none';
+    tbody.innerHTML = d.images.map(img => buildRow(img, true)).join('');
+
+    // Pager
+    const totalPages = Math.ceil(d.total / 20);
+    if (totalPages > 1) {
+      document.getElementById('tablePager').innerHTML =
+        `<button class="btn btn-ghost btn-sm" ${tablePage===0?'disabled':''} onclick="tablePage--;fetchTablePage()">← Prev</button>
+         <span style="padding:8px 16px;font-size:13px;color:var(--text2)">Page ${tablePage+1} / ${totalPages}</span>
+         <button class="btn btn-ghost btn-sm" ${tablePage>=totalPages-1?'disabled':''} onclick="tablePage++;fetchTablePage()">Next →</button>`;
+    } else {
+      document.getElementById('tablePager').innerHTML = '';
+    }
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+function buildRow(img, showActions) {
+  const cat  = categories.find(c => c.slug === img.category);
+  const emoji = cat?.emoji || '📂';
+  const catName = cat?.name || img.category;
+  const date = new Date(img.created_at).toLocaleDateString('en-PK', {day:'2-digit',month:'short',year:'numeric'});
+  return `<tr>
+    <td><div class="img-row-info">
+      <div class="thumb"><img src="${img.url}" alt="" onerror="this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;font-size:20px\'>🖼️</div>'"/></div>
+      <div><div class="img-row-title" title="${img.title}">${img.title}</div><div class="img-row-meta">${img.author||'—'}</div></div>
+    </div></td>
+    <td><span class="cat-pill">${emoji} ${catName}</span></td>
+    <td><button class="status-pill ${img.status}" onclick="${showActions?`toggleStatus('${img.id}','${img.status}')`:''}" ${showActions?'':'style="cursor:default"'}>● ${img.status}</button></td>
+    <td style="color:var(--text3);font-size:12px">${date}</td>
+    <td>${showActions?`<div class="row-actions">
+      <a class="row-btn" href="${img.url}" target="_blank" title="Open">🔗</a>
+      <button class="row-btn danger" onclick="deleteImage('${img.id}')" title="Delete">🗑️</button>
+    </div>`:'—'}</td>
+  </tr>`;
+}
+
+async function toggleStatus(id, current) {
+  const next = current === 'live' ? 'draft' : 'live';
+  try {
+    await apiFetch('/api/images?id='+id, 'PATCH', { status: next });
+    toast(next === 'live' ? '✅ Published' : '📝 Set to draft', 'success');
+    await fetchTablePage();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function deleteImage(id) {
+  if (!confirm('Delete this image? This will remove it from Cloudinary and Supabase permanently.')) return;
+  try {
+    await apiFetch('/api/images?id='+id, 'DELETE');
+    toast('🗑️ Deleted permanently', 'success');
+    await fetchTablePage();
+    await loadDashboard();
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ══════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════
+document.getElementById('nName').addEventListener('input', function(){
+  document.getElementById('nSlug').value = this.value.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+});
+
+function copyCode(id) {
+  const el = document.getElementById(id);
+  const text = el.textContent.replace('Copy','').trim();
+  navigator.clipboard.writeText(text).then(() => toast('Copied!','info'));
+}
+
+let toastTimer;
+function toast(msg, type='info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
