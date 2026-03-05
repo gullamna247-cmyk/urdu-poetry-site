@@ -3,7 +3,9 @@
   "version": "2.0.0",
   "description": "Shayari Gallery — Production build with Cloudinary + Supabase",
   "private": true,
-  "engines": { "node": "18.x" },
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel --prod"
